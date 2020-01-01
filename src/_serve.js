@@ -19,7 +19,17 @@ module.exports = (serverless, settings ) => {
       }
     }))
     
-    app.use(express.static( settings.path ))
+    app.use(express.static( settings.path, {
+      setHeaders:(res) => {
+        if(settings.headers.length) {
+          settings.headers.forEach(header => {
+            Object.keys(header).forEach(key => {
+              res.set(key, header[key]);
+            })
+          });
+        }
+      }
+    }));
 
     app.listen( settings.port, () => { 
 
